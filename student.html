@@ -1,0 +1,481 @@
+
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<head>
+
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/alertify.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/alertify.min.css"/>
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/default.min.css"/>
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/semantic.min.css"/>
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/bootstrap.min.css"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/alertify.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/alertify.min.css"/>
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/default.min.css"/>
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/semantic.min.css"/>
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/bootstrap.min.css"/>
+
+    <!--jQueryUI library-->
+    <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+
+
+
+
+    <style>
+
+        p
+        {
+            color:white;
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .table th
+        {
+            text-align: center;
+            /*color: #2980b9;*/
+            color:white;
+        }
+        .table
+        {
+            border-radius: 10px;
+            /* width: 50%;*/
+            background-color: white;
+            border-collapse:separate;
+            overflow: hidden;
+            font-size: 12px;
+        }
+
+        #body1
+        {
+            background:#54769b;
+        }
+        li
+        {
+            width: auto;
+            height:40px;
+            border-top-left-radius:15px;
+            border-top-right-radius:15px;
+            border-bottom-right-radius:15px;
+            border-bottom-left-radius:15px;
+            margin:0 0 5px 0;
+           /* color: #ffffff;*/
+            color:  #3e5975;
+            font-size: 12px;
+        }
+        li.inset
+        {
+            border-style: inset;
+        }
+        li:nth-child(odd)
+        {
+           /* background-color: rgb(87, 130, 168);*/
+            background-color: #ced9e4;
+
+        }
+
+        li:nth-child(even)
+        {
+           /* background-color: rgb(137, 167, 194);*/
+            background-color: #adbfd2;
+        }
+        #drag,#avail
+        {
+            /*text-align: center;*/
+            color:white;
+            font-size: 18px;
+        }
+        .container th
+        {
+            cursor:pointer;
+        }
+        #head
+        {
+            color:white;
+            /* text-align: center;*/
+            font-weight: bold;
+            text-decoration: underline;
+
+        }
+        #success
+        {
+            padding: 10px 20px;
+            font-size: 20px;
+            border-radius: 10px;
+            width:auto;
+            /*
+            margin-left: 130px;
+            margin-bottom: 100px;
+            */
+        }
+        #welcome
+        {
+
+            font-size: 25px;
+
+        }
+        #selected-preferences
+        {
+            height: 120px;
+        }
+        .btn.btn-success
+        {
+            color:white;
+            background-color: #344d65;
+            outline: none;
+            border:none;
+        }
+        .btn.btn-default{
+            background-color: #dddddd;
+        }
+        #marker1,#marker2,#your
+        {
+            color:#688fb1;
+        }
+
+        #calendar{
+            margin-left: 10%;
+            margin-right: 10%;
+            background-color: white;
+            -webkit-border-radius: 8px;
+            -moz-border-radius: 8px;
+            border-radius: 8px;
+            border: 1px solid black;
+            overflow: hidden;
+
+        }
+
+
+
+    </style>
+
+
+        <!-- script to get the full name of user from session id -->
+    <script>
+
+        $(document).ready(function(){
+
+            // show calendar on load
+            $("#calendar").fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',// display month in the center
+                    right: 'month,agendaWeek,agendaDay',// display month,week,day button
+
+                },
+                weekends: false,
+                minTime: "09:00:00",
+                maxTime: "18:00:00",
+
+                //titleRangeSeparator: "-",
+
+            });
+
+            $("#available").on("click","li",function(event){
+
+                // Get the date of the item and redirect the
+                // calendar to that date
+
+                var slot = $(this).text().split("To");
+                var start_date = new Date(slot[0]);
+                var end_date = new Date (slot[0].split(" ")[0] + " "+slot[1] );
+                // alert (end_date);
+
+                $('#calendar').fullCalendar('removeEvents');
+
+                $('#calendar').fullCalendar('gotoDate',start_date);
+                $('#calendar').fullCalendar('renderEvent',
+                    {
+                        title: '',
+                        start: start_date,
+                        end:end_date,
+                        allDay: false
+
+                    });
+
+
+            });
+
+            $.ajax({
+                type:'post',
+                url:'./session.php',
+                // data: { userName: uname }
+
+            }).done(function(response){                             // .done - callback function if the request is successfull
+                // response - is the data(variable) got back from requested url
+                //alert("Response: "+ response);
+               $("#welcome").html("Welcome " + response);
+
+            }),
+
+            // ajax to get markers name in the table
+            $.ajax({
+                    type:'post',
+                    dataType: 'json',
+                    url:'./student_script.php',
+                    data: { getMarkers: 'getMarkers'}
+
+                }).done(function(data){                             // .done - callback function if the request is successfull
+                    // response - is the data(variable) got back from requested url
+                    //alert("Response: "+ response);
+                   // alert("Data got back: " + data.marker2);
+
+                $("#marker1").append("<b>"+data.marker1+"</b>");
+                $("#marker2").append("<b>"+data.marker2+"</b>");
+
+
+            }),
+
+            // ajax to load available common time slots of the markers
+            // and selected prefs of students
+            $.ajax({
+                    type:'post',
+                    dataType: 'json',
+                    url:'./student_script.php',
+                    data: { available: 'LoadAvailable'}
+
+                }).done(function(data) {                             // .done - callback function if the request is successfull
+                        // response - is the data(variable) got back from requested url
+                        //alert("Data got back: " + data);
+                    $("#selected-preferences").html(data.selected);
+                    $("#available").html(data.available);
+
+                console.log(data.selected);
+                console.log(data.available);
+            }),
+
+            // Button click function
+            $("#success").click(function(){
+
+                // if choices are blank
+                if ($("#selected-preferences li").length == 0) {
+                    alertify.alert('<span style="color:red"><strong><em>Preferences can\'t be empty!</em></strong></span>');
+                }
+
+                // if preferences  are less than 3
+                else if ($("#selected-preferences li").length <3) {
+                    alertify.alert('<span style="color:red"><strong><em>Please submit 3 preferences!</em></strong></span>');
+                }
+
+
+                // if choices are not blank
+                else {
+
+                    var ask = confirm("Are you sure to change your preferences?");
+
+                    // If user sure then submit
+                    if (ask) {
+
+                        var preferences = [];         // variable to save given prefrences on submit button click
+
+                        //alert('button pressed!');
+                        console.log("hi");
+
+                        $("#selected-preferences li").each(function () {
+
+                            var content = $(this).html();
+                            preferences.push(content);
+
+                        }),
+
+                            $.ajax({
+                                type: 'post',
+                                dataType: 'json',
+                                url: './student_script.php',
+                                data: {submit: 'yes', choices: preferences}
+
+                            }).done(function (data) {                             // .done - callback function if the request is successfull
+
+                                console.log(data);
+
+                                if(data == "success")
+                                        alertify.alert("Choices have been saved!");
+                                else
+                                        alert(data);
+
+                            }).fail(function (data) {
+                                console.log(data);
+                                //alert(data);
+
+                            });
+
+                    }
+                }
+
+            });
+
+        });
+    </script>
+
+
+    <script src="./sortable1.js"></script>
+
+
+</head>
+
+<body id="body1">
+<div style="height: 20px;"></div>
+<div class="row">
+
+    <div class="col-md-11"></div>
+    <div class="col-md-1" id="btn">
+
+        <button class="btn btn-default"> <a href="main_logout.php"><span style="font-weight: bold;">Logout</span></a></button>
+
+    </div>
+
+</div>
+
+<div style="height: 10px;"></div>
+
+
+<div class="row">
+
+    <div class="col-md-2">
+        <table  id="markerTable" class="table">
+            <tbody>
+
+            <tr>
+                <td id="your">Your assigned Markers are: </td>
+            </tr>
+            <tr>
+                <td id="marker1"> Marker 1: </td>
+
+            </tr>
+            <tr>
+                <td id="marker2">Marker 2:</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-2"></div>
+    <div class="col-md-4">
+        <div id="wel"><p id="welcome">  </p></div>
+    </div>
+
+
+</div>
+
+
+<div class="row">
+
+
+    <div class="col-md-1"></div>
+
+    <div class="col-md-7">
+
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <h3 id="head"> Please select your preferences </h3>
+            </div>
+        </div>
+
+        <div id="row" style="margin: 3%">
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-5" id="catch">
+
+                <h2 class="sub-header" id="avail">Available Slots</h2>
+                <div class="table-responsive">
+                    <table class="table  table-striped ">
+                        <thead>
+                        <tr>
+
+                            <th> <ol id="available"><?php echo showCommonSlots(); ?></ol></th>
+                        </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+            <div class="col-md-2" ></div>
+            <div class="col-md-5" id="try">
+
+                <h2 class="sub-header" id="drag">Drag Preferences</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped ">
+                        <thead>
+                        <tr>
+                            <th><ol id="selected-preferences"><?php echo preferences(); ?></ol></th>
+
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="col-md-4" >
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-6"> <h3 style="color: #ffffff; font-weight: bold;text-decoration: underline;"> Calendar</h3> </div>
+    </div>
+
+    <div class="row" style="margin: 5%"></div>
+
+    <div class="row">
+        <div id="calendar">
+        </div>
+    </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="row" style="margin-top: 3%;">
+    <div class="col-md-3"></div>
+
+    <div class="col-md-2">
+        <div class="text-center">
+            <div class="btn-group-vertical">
+                <button type="button" id="success" class="btn btn-success btn-lg">Submit Preferences</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
+

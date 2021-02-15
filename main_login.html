@@ -1,0 +1,103 @@
+<html>
+<head>
+    <title> Student log-in </title>
+    <link rel="stylesheet" type="text/css" href="main_login.css"> </link>
+    <!--<link type="text/css" rel="stylesheet" href="../CSS/login1.css">-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- responsive mobile dsign -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+</head>
+
+<body>
+
+<html>
+<head>
+    <title> Student log-in </title>
+    <link rel="stylesheet" type="text/css" href="./main_login.css"> </link>
+
+</head>
+<body>
+
+<div class="container">
+    <img src="./images/login.jpg">
+    <form>
+
+        <div class="form-input">
+            <i id="icon1" class="fa fa-user fa-2x"></i>
+
+            <input type="text" name="username" placeholder="Enter Username" id="username_id" required >
+
+        </div>
+        <div class="form-input">
+            <i class="fa fa-lock fa-2x"></i>
+            <input type="password" name="pwd" placeholder="Enter Password" id="password_id" required>
+        </div>
+
+        <input type="submit" name="submit" value="LOGIN" id="submit" class="btn btn-success btn-lg"><br />
+
+    </form>
+
+    <div id="resultDiv"></div>
+</div>
+
+
+
+<script>
+    $(document).ready(function(){                   // when the whole document is loaded and ready
+        $('#submit').click(function(event){        // when the user clicks on submit button it helps in logging in
+            event.preventDefault();
+
+            var username1=$('#username_id').val();  // passing and storing user enter username,password into varaibles
+            var password1=$('#password_id').val();
+
+            // var type1=$('#utype').val();
+            $.ajax({
+
+                url:"./main_login_script.php",                                                    // redirecting page to testinganotherlogin.php
+                data:{username2: username1 ,password2:password1},                               //,type2: type1}, // passing the user entered username and password to php page
+                dataType :"json",                                                               // passing in json datatype
+                type:"post",                                                                     // posting to testinganotherlogin.php
+                encode : true,
+                success:function(data){                                                          // if success
+                    if(data.message.success == "ok"){                                            // "ok" is coming from the $message['success']
+
+                        $('#resultDiv').text(data.message.info);                                 // gives message in the resultdiv $message['info']
+                        //$('#resultDiv').append("<br/>");
+
+                        //if response is ok then login success
+                        var redirectUrl = JSON.stringify(data.redirects);                       // converts value to JSON string and redirects
+                        redirectUrl = redirectUrl.replace(/[{"":}]/g, '');                      // using /g all of the values will be replaced
+                        var url = redirectUrl.replace('redirect','');                           // if everything matches abd query is passed then it will redirect to the url given in php page to either student/marker related page
+                        setTimeout(' window.location.href = "'+ url + '"; ', 6000);             // redirects before 6000 milisec
+
+                        $('#resultDiv').html("Login success redirecting...");
+
+                    }else{
+                        $('#resultDiv').text(data.message.error);                   // if there is any error then message from $message['error'] is displayed
+                    }
+
+                }
+            });
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

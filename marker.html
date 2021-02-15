@@ -1,0 +1,810 @@
+
+<style>
+    p{
+        color:white;
+        font-weight: bold;
+        font-size: 25px;
+        background:#54769b;
+        text-align: center;
+    }
+
+    .fc-event:hover {
+        border-color: #1c7d87;
+    }
+    .fc-event:hover .fc-content {
+        color: #79b7b4;
+
+    }
+
+    #calendar{
+        background: rgb(242, 242, 242);
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 15px;
+        border: 1px solid black;
+        overflow: hidden;
+        margin: 3%;
+
+    }
+    #calendar2{
+
+        background: rgb(242, 242, 242);
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 15px;
+        border: 1px solid black;
+        overflow: hidden;
+        margin: 3%;
+
+
+    }
+
+    #text{
+        color: white;
+    }
+
+    #btn{
+        position:absolute;
+        top:10px;
+        right:10px;
+    }
+
+
+
+    ul li
+    {
+        display:inline;
+
+        width: 70px;
+        height: 5px;
+        background: rgb(242, 242, 242);
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    li a{
+        width:auto;
+        color: black;
+    }
+
+    a,u{
+        text-decoration: none !important;
+    }
+
+
+
+    #optionBar{
+        border: 1px solid #ccc;
+        background-color: #f3f3f3;
+        font-weight: bold;
+        margin: 20px;
+        font-size: 20px;
+        /* width: 25%;*/
+        /*display: block; visibility: hidden;*/
+    }
+
+
+
+    /*  .selectpicker{
+          margin-left: 80px;
+          margin-bottom: 35px;
+      }*/
+
+
+
+
+</style>
+
+
+<!DOCTYPE html>
+<html>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<head>
+    <title>Allocation Of VIVA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+
+    <!-- links for styling alert -->
+    <!-- JavaScript -->
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/alertify.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/alertify.min.css"/>
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/default.min.css"/>
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/semantic.min.css"/>
+    <!-- Bootstrap theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.11.0/build/css/themes/bootstrap.min.css"/>
+
+    <!-- getting the user full name when logged in -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+
+    <script>
+
+        $(document).ready(function(){
+
+            $.ajax({
+                type:'post',
+                url:'./session.php'
+            }).done(function(response){                             // .done - callback function if the request is successfull
+                // response - is the data(variable) got back from requested url
+                //alert("Response: "+ response);
+                $("#welcome").html("Welcome " + response);
+
+            });
+
+
+        });
+    </script>
+
+
+    <!-- end of full fname script -->
+
+    <script>
+
+        $(document).ready(function() {
+
+            var calendar = $('#calendar').fullCalendar({
+
+                editable:true,
+
+                header:{
+                    left:'prev,next,today',
+                   center:'title',// display month in the center
+                    right:'month,agendaWeek,agendaDay'// display month,week,day button
+                },
+                weekends:false,// remove sat and sunday
+
+                //start
+
+
+
+                dayClick: function(date, jsEvent, view) { // on single click goto day view
+                    $('#calendar').fullCalendar('gotoDate',date);
+                    $('#calendar').fullCalendar('changeView','agendaDay'); //This would take you to the respective month
+                },
+
+                eventClick: function(calEvent, event, jsEvent) {
+                    var dt = calEvent.start;
+                    $('#calendar').fullCalendar('gotoDate',dt);
+                    $('#calendar').fullCalendar('changeView','agendaDay');
+                },
+
+
+
+                //end
+
+
+
+
+                businessHours:{   // setting business hours from mon-fri between 9-6
+                    start:'09:00',
+                    end:'18:00',
+                    dow:[1,2,3,4,5]
+                },
+
+                minTime: "09:00:00",    // set min time= 9am
+                maxTime: "19:00:00", height:'auto',// max time=5pm height:'auto' to remove the extra rows
+
+
+                eventBackgroundColor:'rgb(188, 210, 244)',
+                events: './calendar_actions/load.php',// see particularday events
+
+
+                defaultView:'agendaWeek',
+
+
+                selectable:true,//selectmultiple days or events times by dragging or placing cursor
+                selectHelper:true,// draw a placeholder even user is dragging
+
+
+
+
+                eventMouseover: function (event, jsEvent, view) {
+
+                    if (view.name == "agendaWeek") {
+                        $(jsEvent.target).attr('title', 'Click here to view the event in DAY view, Right-Click to delete');
+                        // target is object and title is the value of attr
+                    }
+                    //alert(event.id);
+                },
+
+                select: function(start, end, allDay)
+                {
+
+                    // Trial code to block out of office
+
+
+                    if (start.format("ddd") !== "Sat" && start.format("ddd") !== "Sun") {
+                        if (start.format("HH") < 09 || start.format("HH") > 17) {
+                            // alert("We are closed at that time , Please select a other time , 9 to 5");
+                            alertify.alert("Not allowed to ENTER");
+                            //alert(start.format("HH"));
+                        }
+                        else if (end.format("HH") > 18) {
+                            // alert("We are closed at that time , Please select a other time , 9 to 5");
+                            alertify.alert("Sorry! Viva Can only be scheduled between 9-5");
+                            //alert(start.format("mm"));
+                        }
+                        else if (end.format("HH") == 18 && end.format("mm") > 00) {
+                            //alert("We are closed at that time , Please select a other time , 9 to 5");
+
+                            alertify.alert("Sorry! Viva Can only be scheduled between 9-5");
+                            //alert(start.format("mm"));
+                        }
+
+                        else {
+
+                            var title = prompt("Please enter title");
+                            if (title) {
+                                var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");//generate current date and time value
+                                // console.log(start);
+                                var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
+
+                                $.ajax({
+                                    url: "./calendar_actions/insert.php",// request to insert page
+                                    type: "POST",// sending data to server
+                                    data: {title: title, start: start, end: end},
+                                    success: function (data1) {
+                                        calendar.fullCalendar('refetchEvents');//reload event data on calendar
+                                        //alert("Added Successfully");
+                                        alertify.alert("Added Successfully");
+                                        //alert("Data type: " + data1.info);
+                                    }
+                                });
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        // alert("We are close on Saturdays and Sundays");
+                        alertify.alert('Sorry!! Viva cannot be scheduled on weekends');
+                    }
+					
+
+
+                },
+
+                editable:true,// allow to edit event data
+                eventResize:function(event)// if resized event on calendar
+                {
+                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
+
+                    var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
+                    var title = event.title;// fetch title value and store
+                    var id = event.id;// particular event resized value
+                    console.log("eventid: " +id);
+                    $.ajax({
+                        url:"./calendar_actions/update.php",
+                        type:"POST",
+                        data:{title:title, start:start, end:end, id:id},
+                        success:function(){
+                            calendar.fullCalendar('refetchEvents');
+                            //alert('Event Update');
+                            alertify.alert("Dates Updated!");
+                        }
+                    })
+                },
+
+                eventDrop:function(event)// if event has been dragged from cell to another
+                {
+                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
+
+                    var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
+                    var title = event.title;// get the title and id of the event that has been moved to another cell
+                    var id = event.id;
+                    $.ajax({
+                        url:"./calendar_actions/update.php",
+                        type:"POST",
+                        data:{title:title, start:start, end:end, id:id},
+                        success:function()
+                        {
+                            calendar.fullCalendar('refetchEvents');
+                            //alert("Event Updated");
+                            alertify.alert("Dates Updated");
+                        }
+                    });
+                },
+
+
+                eventRender: function (event, element) {
+                    element.bind('mousedown', function (e) {
+                        if (e.which == 3) {
+
+                            alertify.alert('Events are not deleted');
+
+
+                            if(confirm("Are you sure you want to remove it?"))
+
+                            // if(   alertify.confirm('a callback will be invoked on cancel.').set('oncancel', function(closeEvent){ alertify.error('Cancel');} ))
+                            {
+                                var id = event.id;
+                                $.ajax({
+                                    url:"./calendar_actions/delete.php",
+                                    type:"POST",
+                                    data:{id:id},
+                                    success:function()
+                                    {
+                                        calendar.fullCalendar('refetchEvents');// reload data on calendar
+                                        // alert("Event Removed");
+                                        alertify.alert("Dates removed");
+                                        //alertify.confirm('dates remove.').set('oncancel', function(closeEvent){ alertify.error('Cancel');} )
+                                    }
+                                })
+
+
+
+
+                            }
+
+
+
+
+                        }
+                    });
+                },
+
+                
+            });
+        });
+
+
+
+    </script>
+
+    <!--script for shared tab-->
+    <script>
+
+        //define a global variable
+        var otherMarker = "";
+        var calander2;
+
+        $(document).ready(function() {
+
+
+
+            // scrip to get allavailable markers name for tab-2 - for Dropdown
+            $.ajax({
+                url:'./marker_script.php',
+                data:{allMarkers:'markers'},
+                dataType: 'json',
+                type:'post'
+            }).done(function (data) {
+
+                $.each(data, function(key, value) {
+                    $('#optionBar').append("<option>" + value + "</option>");
+                });
+
+
+            });
+
+            // Onclick function for tab2
+            $('a[href="#tabs-2"]').click(function () {
+
+
+                calander2 = loadCalendar(otherMarker);
+
+
+            });
+
+            function refreshCalander(){
+
+                //alert("Refetch Callback");
+                $('#calendar2').fullCalendar('refetchEvents')
+            };
+
+            //finction to load calendar for tab2
+            function loadCalendar(marker2) {
+
+                //alert('inside load:'+ marker2);
+
+                var in_calendar = $('#calendar2').fullCalendar({
+
+
+                    editable: false,
+
+
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',// display month in the center
+                        right: 'month,agendaWeek,agendaDay'// display month,week,day button
+                    },
+                    weekends: false,// remove sat and sunday
+
+                    //start
+
+
+                    dayClick: function (date, jsEvent, view) { // on single click goto day view
+                        $('#calendar2').fullCalendar('gotoDate', date);
+                        $('#calendar2').fullCalendar('changeView', 'agendaDay'); //This would take you to the respective month
+                    },
+
+                    eventClick: function (calEvent, event, jsEvent) {
+                        var dt = calEvent.start;
+                        $('#calendar2').fullCalendar('gotoDate', dt);
+                        $('#calendar2').fullCalendar('changeView', 'agendaDay');
+                    },
+
+
+                    //end
+
+
+                    businessHours: {   // setting business hours from mon-fri between 9-6
+                        start: '09:00',
+                        end: '18:00',
+                        dow: [1, 2, 3, 4, 5]
+                    },
+
+                    minTime: "09:00:00",    // set min time= 9am
+                    maxTime: "19:00:00", height: 'auto',// max time=5pm height:'auto' to remove the extra rows
+
+                    //eventBackgroundColor: 'yellow',
+                    //events: './sharedCalendar.php',     // see particularday events
+
+
+
+                    events : {
+                        url: './sharedCalendar.php',
+                        type: 'POST',
+                        data: {markerName: marker2},
+                        success: refreshCalander()
+
+                    },
+
+                    defaultView: 'agendaWeek',
+                    lazyFetching: false,
+
+
+
+                });
+
+                return in_calendar;
+            }
+
+
+            // Script to react on selection change on drop down list
+            $("#optionBar").change(function() {
+                var selectedVal = this.value;
+                // alert (selectedVal);
+                $.ajax({
+                    url: './marker_script.php',
+                    data: {selectedMarker: selectedVal},
+                    dataType: 'json',
+                    type: 'post',
+                }).done(function (data) {
+
+                    // otherMarker = 'nicole1';
+                    //alert("Selected Id: " + data);
+
+                    //loadCalendar(otherMarker);
+                    //updateCalendar('thomas1');
+                    $.ajax({
+                        url: './sharedCalendar.php',
+                        data: {markerName: 'thomas1'},
+                        dataType: 'json',
+                        type: 'post',
+                        success: function(result){
+
+                            success_callback(result, data);
+                        }
+                    });
+
+
+                });
+
+              
+
+            });
+
+            // function to execute on callback of selection change
+            function success_callback(data, othermarker){
+
+                //alert ("Inside success callback");
+
+                // getcurrent date
+                var currentDate = $('#calendar2').fullCalendar('getDate');
+
+                //console.log("Date: ", currentDate.toDate());
+
+                console.log("Date: ", data);
+
+                //$('#calendar2').fullCalendar('renderEvents', data, true);
+
+                $('#calendar2').fullCalendar('destroy');
+
+                loadCalendar(othermarker);
+
+                // go to any of the returned event date
+                $('#calendar2').fullCalendar( 'gotoDate', data[0].start );
+
+
+            }
+
+
+
+        });
+
+    </script>
+
+    <!--script for tab 3-->
+    <script>
+
+
+        $(document).ready(function() {
+
+            var student_data;
+
+            // get the data from backend
+            $.ajax({
+                url:'./third_tab_script.php',
+                dataType: 'json',
+                data:{markerName:'nervo1'},
+                type:'post'
+            }).done(function (data) {
+
+                //alert(data.Choices);
+                student_data_callback(data);
+
+                $.each(data.Names, function (i, item) {
+                    console.log(item);
+                });
+
+
+            }).fail(function () {
+                alert("Script Failed");
+            });
+
+            // ajax call back to save received data in global variable
+            function student_data_callback(data) {
+
+                student_data = data;
+            }
+
+
+            // Onclick function for tab3
+            $('a[href="#tabs-3"]').click(function () {
+
+                var table_contents = render_student_info(student_data);
+
+                $("#tabs-3").html(table_contents);
+
+                // bind 'myForm' and provide a simple callback function
+                $('.myForm').ajaxForm( {
+                    // dataType identifies the expected content type of the server response
+                    dataType:  'json',
+
+                    data: {IDS: student_data.Ids, Semails:student_data.Semails, Memails:student_data.Memails},
+
+                    // success identifies the function to invoke when the server response
+                    // has been received
+                    success:  function (data){
+                        console.log(data);
+
+                        alertify.alert(data);
+
+                    }
+                });
+
+
+            });
+
+            // function to render table dynamically from student data
+            function render_student_info(student_data){
+
+                var len = student_data.Names.length;
+                var Names = student_data.Names;
+                var Markers = student_data.Markers;
+                var choices = student_data.Choices;
+                var Assigned = student_data.Assigned;
+
+                console.log(len);
+
+                var content ="";
+
+
+                // render data for each student through loop
+                for(i=0; i<len; i++){
+
+
+
+                    console.log(Names[i]);
+
+                    content +=
+                        '<div class="row">' +
+                        '<div class="col-md-2"></div>' +
+                        '<div class="col-md-8" style="background-color:rgb(242, 242, 242); border-style: groove">' +
+
+                        '<table class="table table-striped">' +
+                        '<thead>' +
+                        '<tr>' +
+                        '<th></th>' +
+                        '<th>Student Name</th>' +
+                        '<th>Second Marker</th>' +
+                        '<th>Preferences (in Order)</th>' +
+                        '<th>Assigned</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                        '<tr>' +
+                        '<td><img src="../images/single.png" height="100px" width="100px"/></td>' +
+                        '<td style="color: #2980b9">' + Names[i] + '</td>' +
+                        '<td style="color: #2980b9">' + Markers[i] + '</td>' +
+                        '<td style="color: #2980b9">' +
+                        '<form action="./third_tab_script.php" method="post" class="myForm" onsubmit="return confirm(\'Do you really want to assign the selected time?\');">' +
+                        '<div class="form-group">'+
+                        '<input type="radio" name="choice" value="1">' + choices[i][0] + '<br>' +
+                        '<input type="radio" name="choice" value="2">' + choices[i][1] + '<br>' +
+                        '<input type="radio" name="choice" value="3">' + choices[i][2] + '<br>' +
+                        '<input type="hidden" name="id" value=' +(i+1).toString()+ ' />'+
+                        '</div>'+
+                        '<button type="submit" name="submit" class="btn btn-success" style="width: 150px;">Assign</button>'+
+                        '</form>' +
+                        '</td>' +
+                        '<td style="color: #2980b9">' + Assigned[i] +'</td>' +
+                        '</tr>' +
+                        '</tbody>' +
+                        '</table>' +
+                        '</div>' +
+                        '<div class="col-md-2"></div>'+
+                        '</div>'+
+
+                        '<div class="row" style="margin: 10px;"></div>'
+
+
+
+                };
+
+                return content;
+
+            };
+            // Form submit script
+
+
+
+
+
+
+        });
+
+    </script>
+
+
+
+
+</head>
+<body style="background:#54769b;">
+<br />
+
+<div>
+    <p id="welcome">Welcome</p>
+</div>
+
+
+
+
+
+<div id="maintabs">
+
+    <ul class='tabs'>
+        <li ><a id="first" href="#tabs-1">Your Personal Calendar</a></li>
+        <li><a id="second" href="#tabs-2">Shared Calendar</a></li>
+        <li><a id="third" href="#tabs-3">Assign Viva Date</a></li>
+    </ul>
+
+
+
+
+
+    <div id="tabs-1">
+        <h2 align="center"><div id="text" style="font-style: oblique;"> Please select the Date and Time</div></h2>
+        <br />
+        <div id="calendar"></div>
+    </div>
+
+
+    <div id="tabs-2">
+        <h3 style="text-align: center; font-style: italic; color: white;"> Select a marker to view their calendar</h3>
+
+        <div style="text-align: center;">
+            <select class="custom-select custom-select-md " id = "optionBar">
+                <option class="options" selected>Please select a marker</option>
+
+            </select>
+        </div>
+
+        <div id="calendar2"></div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <div id="tabs-3">
+
+        <div><h2 style="text-align: center; font-style: italic; color: white;">Please Assign the Viva Date and Time for the student </h2></div>
+    </div> <!-- end of div-id tabs-3-->
+
+
+
+</div>
+
+
+
+<div id="btn">
+
+    <button class="btn btn-default btn-md"><a href="main_logout.php"><span style="text-align: center; font-weight: bold;left: 20px; margin: auto">Logout</span></a></button>
+
+</div>
+
+
+<script>
+    $('ul.tabs').each(function(){
+
+        var $activeTab, $tab_content, $current_links = $(this).find('a');
+
+
+        $activeTab = $($current_links.filter('[href="'+location.hash+'"]')[0] || $current_links[0]);
+        $activeTab.addClass('active');
+
+        $tab_content = $($activeTab[0].hash);
+
+        // Hide the remaining content
+        $current_links.not($activeTab).each(function () {
+            $(this.hash).hide();
+        });
+
+        // Bind the click event handler
+        $(this).on('click', 'a', function(e){
+
+            //alert(this.id);
+            // Make the old tab inactive.
+            $activeTab.removeClass('active');
+            $tab_content.hide();
+
+            // Update the variables with the new link and content
+            $activeTab = $(this);
+            $tab_content = $(this.hash);
+
+            // Make the tab active.
+            $activeTab.addClass('active');
+            $tab_content.show();
+
+            // if clicked tab is tab-2 then show the calander
+            if (this.id == "second")
+                $('#calendar2').fullCalendar('today');
+
+            // Prevent the anchor's default click action
+            e.preventDefault();
+
+
+        });
+
+    });
+
+
+
+
+
+</script>
+
+
+</body>
+</html>
